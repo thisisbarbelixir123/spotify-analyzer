@@ -12,6 +12,7 @@ const SCOPES = [
   'user-top-read',
   'playlist-read-private',
   'playlist-read-collaborative',
+  'playlist-modify-public',
 ].join(' ')
 
 function generateRandomString(length) {
