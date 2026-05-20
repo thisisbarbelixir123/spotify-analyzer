@@ -1,4 +1,4 @@
-const BASE_URL = '/freqblog'
+const BASE_URL = '/api'
 
 // Bulk lookup — max 50 tracks per request
 // tracks: array of Spotify track objects { name, artists: [{name}] }
@@ -21,7 +21,7 @@ export async function bulkLookup(tracks) {
     }))
 
     try {
-      const res = await fetch(`${BASE_URL}/bulk`, {
+      const res = await fetch(`${BASE_URL}/freqblog`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
