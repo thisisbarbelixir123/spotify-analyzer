@@ -128,7 +128,7 @@ export const spotifyApi = {
 
   // Create a new playlist
   createPlaylist: (userId, name, isPublic = true) =>
-    spotify.post(`/users/${userId}/playlists`, {
+    spotify.post(`/me/playlists`, {
       name,
       public: isPublic,
       description: 'Created by Spotify Analyzer',
