@@ -44,6 +44,9 @@ export function useSpotify() {
     const codeChallenge = base64urlencode(hashed)
 
     localStorage.setItem('pkce_code_verifier', codeVerifier)
+    
+    // Debug — pastikan tersimpan
+    console.log('Verifier saved:', localStorage.getItem('pkce_code_verifier') ? 'YES' : 'NO')
 
     const params = new URLSearchParams({
       client_id: CLIENT_ID,
@@ -59,6 +62,9 @@ export function useSpotify() {
 
   const exchangeToken = useCallback(async (code) => {
     const codeVerifier = localStorage.getItem('pkce_code_verifier')
+    console.log('Verifier on callback:', codeVerifier ? 'FOUND' : 'NOT FOUND')
+    console.log('All localStorage keys:', Object.keys(localStorage))
+    
     if (!codeVerifier) throw new Error('No code verifier found')
 
     // Exchange directly with Spotify — no server needed
