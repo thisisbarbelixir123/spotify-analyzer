@@ -136,7 +136,7 @@ export const spotifyApi = {
 
   // Add tracks to playlist (max 100 per request)
   addTracksToPlaylist: (playlistId, trackUris) =>
-    spotify.post(`/playlists/${playlistId}/tracks`, {
+    spotify.post(`/playlists/${playlistId}/items`, {
       uris: trackUris.slice(0, 100),
     }),
 }
