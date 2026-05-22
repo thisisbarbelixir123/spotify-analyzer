@@ -44,6 +44,7 @@ export function useSpotify() {
     const codeChallenge = base64urlencode(hashed)
 
     localStorage.setItem('pkce_code_verifier', codeVerifier)
+    sessionStorage.setItem('pkce_code_verifier', codeVerifier)
     
     // Debug — pastikan tersimpan
     console.log('Verifier saved:', localStorage.getItem('pkce_code_verifier') ? 'YES' : 'NO')
@@ -61,7 +62,8 @@ export function useSpotify() {
   }, [])
 
   const exchangeToken = useCallback(async (code) => {
-    const codeVerifier = localStorage.getItem('pkce_code_verifier')
+    const codeVerifier = localStorage.getItem('pkce_code_verifier') 
+      || sessionStorage.getItem('pkce_code_verifier')
     console.log('Verifier on callback:', codeVerifier ? 'FOUND' : 'NOT FOUND')
     console.log('All localStorage keys:', Object.keys(localStorage))
     
@@ -90,6 +92,7 @@ export function useSpotify() {
       localStorage.setItem('spotify_refresh_token', data.refresh_token)
     }
     localStorage.removeItem('pkce_code_verifier')
+    sessionStorage.removeItem('pkce_code_verifier')
 
     const userRes = await spotifyApi.getMe()
     setUser(userRes.data)
