@@ -66,9 +66,14 @@ function App() {
       spotifyApi.getMe()
         .then((res) => setUser(res.data))
         .catch(() => {
-          // Token invalid — logout
+          // Token invalid atau expired — logout
           logout()
         })
+    }
+
+    // Kalau tidak ada token sama sekali, pastikan state bersih
+    if (!accessToken) {
+      logout()
     }
   }, [accessToken])
 
