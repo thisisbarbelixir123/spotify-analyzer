@@ -19,6 +19,8 @@ function TokenWatcher() {
 
   useEffect(() => {
     if (!accessToken) return
+
+    // Cek token setiap 30 detik
     const interval = setInterval(() => {
       const token = localStorage.getItem('spotify_access_token')
       if (!token) {
@@ -26,7 +28,30 @@ function TokenWatcher() {
         navigate('/', { replace: true })
       }
     }, 30000)
-    return () => clearInterval(interval)
+
+    // Cek saat tab kembali aktif setelah lama ditutup
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        const token = localStorage.getItem('spotify_access_token')
+        if (!token) {
+          logout()
+          navigate('/', { replace: true })
+        } else {
+          // Verifikasi token masih valid dengan ping ke Spotify
+          spotifyApi.getMe().catch(() => {
+            logout()
+            navigate('/', { replace: true })
+          })
+        }
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [accessToken])
 
   return null
