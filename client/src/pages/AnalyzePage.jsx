@@ -170,6 +170,19 @@ const AnalyzePage = () => {
         </p>
       </div>
 
+      {/* ── Disclaimer ── */}
+      <div className="analyze-disclaimer">
+        <span className="analyze-disclaimer-icon">ℹ️</span>
+        <div className="analyze-disclaimer-text">
+          <strong>About audio features:</strong> This app uses{' '}
+          <a href="https://freqblog.com" target="_blank" rel="noreferrer">FreqBlog API</a>{' '}
+          as a replacement for Spotify's deprecated audio features endpoint.
+          Values may differ slightly from Spotify's original data,
+          analysis may take a few extra seconds to load,
+          and not all tracks may have audio feature data available.
+        </div>
+      </div>
+
       {/* ── SELECTOR ── */}
       {(!hasResults || showPlaylistPicker) && (
         <div className="analyze-selector">

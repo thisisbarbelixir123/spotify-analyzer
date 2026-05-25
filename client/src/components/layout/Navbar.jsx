@@ -19,7 +19,7 @@ const Navbar = () => {
         onClick={() => navigate('/')}
         style={{ cursor: 'pointer' }}
       >
-        Spotify Analyzer
+        Playlist Analyzer
       </span>
 
       {/* Belum login — tampilkan Login di semua halaman */}

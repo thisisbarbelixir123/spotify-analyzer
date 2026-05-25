@@ -453,3 +453,37 @@
 .analyze-error-banner button:hover {
   background: rgba(255, 85, 85, 0.15);
 }
+
+/* Disclaimer */
+.analyze-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(29, 185, 84, 0.06);
+  border: 1px solid rgba(29, 185, 84, 0.2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 32px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.analyze-disclaimer-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.analyze-disclaimer-text a {
+  color: var(--green);
+  text-decoration: none;
+}
+
+.analyze-disclaimer-text a:hover {
+  text-decoration: underline;
+}
+
+.analyze-disclaimer-text strong {
+  color: var(--text-primary);
+}

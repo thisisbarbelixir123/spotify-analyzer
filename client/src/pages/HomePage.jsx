@@ -32,9 +32,9 @@ const HomePage = () => {
       <section className="home-hero">
         <div className="home-hero-eyebrow">Spotify Playlist Analyzer</div>
         <h1 className="home-hero-title">
-          <span className="home-hero-title-line">ANALYZE</span>
-          <span className="home-hero-title-line accent">YOUR</span>
-          <span className="home-hero-title-line">SOUND</span>
+          <span className="home-hero-title-line">
+            Analyze your <span style={{ color: 'var(--green)' }}>playlists</span>
+          </span>
         </h1>
         <p className="home-hero-sub">
           Discover the audio fingerprint of your music taste.<br />
