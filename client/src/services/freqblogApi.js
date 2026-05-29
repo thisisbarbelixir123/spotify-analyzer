@@ -1,21 +1,16 @@
 const BASE_URL = '/api'
 
-// Bulk lookup — max 50 tracks per request
-// tracks: array of Spotify track objects { name, artists: [{name}] }
 export async function bulkLookup(tracks) {
   if (!tracks || tracks.length === 0) return []
 
-  // Split into chunks of 10 to be safe (FreqBlog limit 10s per request, dan biasanya <10 track bisa selesai dalam 9s)
   const chunks = []
   for (let i = 0; i < tracks.length; i += 10) {
-      chunks.push(tracks.slice(i, i + 10))
-    }
+    chunks.push(tracks.slice(i, i + 10))
   }
 
   const results = []
 
   for (const chunk of chunks) {
-    // FreqBlog /bulk expects: [{ track: string, artist: string }, ...]
     const payload = chunk.map((t) => ({
       track:  t.name,
       artist: t.artists?.[0]?.name ?? '',
@@ -23,13 +18,10 @@ export async function bulkLookup(tracks) {
 
     try {
       const res = await fetch(`${BASE_URL}/freqblog`, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        // X-Api-Key tidak perlu di sini, sudah di server
-    },
-    body: JSON.stringify(payload),
-    })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
 
       if (!res.ok) {
         console.error('FreqBlog /bulk error:', res.status, await res.text())
@@ -37,12 +29,11 @@ export async function bulkLookup(tracks) {
         continue
       }
 
-    const data = await res.json()
-    // FreqBlog returns { results: [{found, result}, ...] }
-    const items = data.results ?? []
-    items.forEach((item) => {
-    results.push(item.found ? item.result : null)
-    })
+      const data = await res.json()
+      const items = data.results ?? []
+      items.forEach((item) => {
+        results.push(item.found ? item.result : null)
+      })
     } catch (err) {
       console.error('FreqBlog fetch error:', err)
       results.push(...chunk.map(() => null))
