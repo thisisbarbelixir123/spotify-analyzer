@@ -5,10 +5,10 @@ const BASE_URL = '/api'
 export async function bulkLookup(tracks) {
   if (!tracks || tracks.length === 0) return []
 
-  // Split into chunks of 50
+  // Split into chunks of 25 to be safe (FreqBlog limit is 50, tapi kita kasih buffer)
   const chunks = []
-  for (let i = 0; i < tracks.length; i += 50) {
-    chunks.push(tracks.slice(i, i + 50))
+  for (let i = 0; i < tracks.length; i += 25) {
+    chunks.push(tracks.slice(i, i + 25))
   }
 
   const results = []
