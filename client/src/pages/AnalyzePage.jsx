@@ -162,12 +162,30 @@ const AnalyzePage = () => {
   return (
     <div className="analyze-page">
 
-      {/* ── HEADER ── */}
+      {/* ── Header ── */}
       <div className="analyze-header">
         <h1 className="analyze-title">Analyze</h1>
         <p className="analyze-sub">
-          Mix and match — pick top tracks by time range and/or your playlists. Up to 3 total.
+          Discover the audio fingerprint of your music taste.
         </p>
+
+        {/* Step guide */}
+        <div className="analyze-steps">
+          <div className="analyze-step">
+            <span className="analyze-step-num">1</span>
+            <span className="analyze-step-text">Choose your top tracks by time range and/or your playlists</span>
+          </div>
+          <div className="analyze-step-arrow">→</div>
+          <div className="analyze-step">
+            <span className="analyze-step-num">2</span>
+            <span className="analyze-step-text">Select up to 3 items to analyze</span>
+          </div>
+          <div className="analyze-step-arrow">→</div>
+          <div className="analyze-step">
+            <span className="analyze-step-num">3</span>
+            <span className="analyze-step-text">Click Analyze and explore your results</span>
+          </div>
+        </div>
       </div>
 
       {/* ── Disclaimer ── */}

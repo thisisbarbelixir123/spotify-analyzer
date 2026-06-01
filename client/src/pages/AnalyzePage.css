@@ -487,3 +487,59 @@
 .analyze-disclaimer-text strong {
   color: var(--text-primary);
 }
+
+/* Step guide */
+.analyze-steps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.analyze-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+
+.analyze-step-num {
+  width: 24px;
+  height: 24px;
+  background: var(--green);
+  color: #000;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.analyze-step-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  max-width: 160px;
+}
+
+.analyze-step-arrow {
+  color: var(--text-muted);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .analyze-steps {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .analyze-step-arrow {
+    transform: rotate(90deg);
+  }
+}
