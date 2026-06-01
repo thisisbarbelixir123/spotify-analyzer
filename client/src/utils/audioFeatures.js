@@ -1,11 +1,46 @@
 export const AUDIO_FEATURES = {
-  danceability:     { label: 'Danceable',    emoji: '🕺', color: '#1DB954' },
-  energy:           { label: 'Energetic',     emoji: '⚡', color: '#FF6B35' },
-  valence:          { label: 'Positive Mood', emoji: '😊', color: '#FFD93D' },
-  acousticness:     { label: 'Acoustic',      emoji: '🎸', color: '#A8D8EA' },
-  instrumentalness: { label: 'Instrumental',  emoji: '🎹', color: '#C77DFF' },
-  speechiness:      { label: 'Vocal',         emoji: '🎤', color: '#FF8FAB' },
-  liveness:         { label: 'Live Feel',     emoji: '🎪', color: '#00B4D8' },
+  energy: {
+    label: 'Energy',
+    emoji: '⚡',
+    color: '#FF6B35',
+    description: 'How intense and active the track feels. High energy = fast, loud, and noisy.',
+  },
+  danceability: {
+    label: 'Danceability',
+    emoji: '🕺',
+    color: '#1DB954',
+    description: 'How suitable the track is for dancing based on tempo, rhythm, and beat strength.',
+  },
+  valence: {
+    label: 'Positive Mood',
+    emoji: '😊',
+    color: '#FFD93D',
+    description: 'How positive or happy the track sounds. High = cheerful, low = sad or angry.',
+  },
+  acousticness: {
+    label: 'Acoustic',
+    emoji: '🎸',
+    color: '#A8D8EA',
+    description: 'How acoustic (non-electronic) the track is. High = unplugged, low = electronic.',
+  },
+  instrumentalness: {
+    label: 'Instrumental',
+    emoji: '🎹',
+    color: '#C77DFF',
+    description: 'How likely the track has no vocals. High = mostly instruments, low = has singing.',
+  },
+  speechiness: {
+    label: 'Vocal',
+    emoji: '🎤',
+    color: '#FF8FAB',
+    description: 'How much spoken word is in the track. High = rap or podcast-like, low = music.',
+  },
+  liveness: {
+    label: 'Live Feel',
+    emoji: '🎪',
+    color: '#00B4D8',
+    description: 'How likely the track was recorded live in front of an audience.',
+  },
 }
 
 export function calculateAverageFeatures(featuresArray) {

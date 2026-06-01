@@ -3,6 +3,7 @@ import { formatDuration } from '../../hooks/usePlaylistAnalysis'
 import TopListModal from '../modals/TopListModal'
 import AudioDetailModal from '../modals/AudioDetailModal'
 import { useSavePlaylist } from '../../hooks/useSavePlaylist'
+import { AUDIO_FEATURES } from '../../utils/audioFeatures'
 import './InfoCard.css'
 
 const MAIN_FEATURES = [
@@ -158,15 +159,21 @@ const InfoCard = ({ result, onRemove }) => {
 
       {/* Main 3 */}
       {MAIN_FEATURES.map(({ key, label, emoji, color }) => {
-        const val = averages?.[key] ?? 0
+        const val = averages?.[key] ?? null
+        const desc = AUDIO_FEATURES[key]?.description
         return (
           <button
             key={key}
             className="infocard-feature"
-            onClick={() => setAudioModal({ featureKey: key,})}
+            onClick={() => setAudioModal({ featureKey: key })}
           >
             <div className="infocard-feature-top">
-              <span className="infocard-feature-name">{emoji} {label}</span>
+              <span className="infocard-feature-name">
+                {emoji} {label}
+                {desc && (
+                  <span className="infocard-feature-hint" title={desc}>ⓘ</span>
+                )}
+              </span>
               <span className="infocard-feature-pct">{val != null ? `${val}%` : '—'}</span>
             </div>
             <div className="infocard-feature-bar">
@@ -175,6 +182,9 @@ const InfoCard = ({ result, onRemove }) => {
                 style={{ width: `${val ?? 0}%`, background: color }}
               />
             </div>
+            {desc && (
+              <span className="infocard-feature-desc">{desc}</span>
+            )}
           </button>
         )
       })}
@@ -198,26 +208,35 @@ const InfoCard = ({ result, onRemove }) => {
       </button>
 
       {showMore && MORE_FEATURES.map(({ key, label, emoji, color }) => {
-        const val = averages?.[key] ?? 0
-        return (
-          <button
-            key={key}
-            className="infocard-feature"
-            onClick={() => setAudioModal({ featureKey: key, featureMeta: { label, emoji, color } })}
-          >
-            <div className="infocard-feature-top">
-              <span className="infocard-feature-name">{emoji} {label}</span>
-              <span className="infocard-feature-pct">{val != null ? `${val}%` : '—'}</span>
-            </div>
-            <div className="infocard-feature-bar">
-              <div
-                className="infocard-feature-fill"
-                style={{ width: `${val ?? 0}%`, background: color }}
-              />
-            </div>
-          </button>
-        )
-      })}
+          const val = averages?.[key] ?? null
+          const desc = AUDIO_FEATURES[key]?.description
+          return (
+            <button
+              key={key}
+              className="infocard-feature"
+              onClick={() => setAudioModal({ featureKey: key, featureMeta: { label, emoji, color } })}
+            >
+              <div className="infocard-feature-top">
+                <span className="infocard-feature-name">
+                  {emoji} {label}
+                  {desc && (
+                    <span className="infocard-feature-hint" title={desc}>ⓘ</span>
+                  )}
+                </span>
+                <span className="infocard-feature-pct">{val != null ? `${val}%` : '—'}</span>
+              </div>
+              <div className="infocard-feature-bar">
+                <div
+                  className="infocard-feature-fill"
+                  style={{ width: `${val ?? 0}%`, background: color }}
+                />
+              </div>
+              {desc && (
+                <span className="infocard-feature-desc">{desc}</span>
+              )}
+            </button>
+          )
+        })}
 
       <div className="infocard-divider" />
 
