@@ -257,7 +257,7 @@ const AnalyzePage = () => {
                         <div className="analyze-playlist-info">
                           <span className="analyze-playlist-name">{playlist.name}</span>
                           <span className="analyze-playlist-tracks">
-                            {playlist.tracks?.total ?? playlist.tracks_total ?? playlist.track_count ?? 0} tracks
+                            {playlist.items?.total ?? playlist.tracks?.total ?? 0} tracks
                           </span>
                         </div>
                       </button>
