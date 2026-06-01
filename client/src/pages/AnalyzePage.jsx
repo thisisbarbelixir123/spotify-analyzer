@@ -173,7 +173,8 @@ const AnalyzePage = () => {
           as a replacement for Spotify's deprecated audio features endpoint.
           Values may differ slightly from Spotify's original data,
           analysis may take a few extra seconds to load,
-          and not all tracks may have audio feature data available.
+          and not all tracks may have audio feature data available.{' '}
+          <strong>Note:</strong> Playlists created by Spotify (e.g. Daily Mix, Made For You) cannot be analyzed due to API restrictions.
         </div>
       </div>
 
@@ -256,7 +257,7 @@ const AnalyzePage = () => {
                         <div className="analyze-playlist-info">
                           <span className="analyze-playlist-name">{playlist.name}</span>
                           <span className="analyze-playlist-tracks">
-                            {playlist.tracks?.total ?? 0} tracks
+                            {playlist.tracks?.total ?? playlist.tracks_total ?? playlist.track_count ?? 0} tracks
                           </span>
                         </div>
                       </button>

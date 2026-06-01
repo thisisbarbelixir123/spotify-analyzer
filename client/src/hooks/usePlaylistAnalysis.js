@@ -74,6 +74,7 @@ export function usePlaylistAnalysis() {
     setError(null)
     try {
       const res = await spotifyApi.getUserPlaylists(50)
+      console.log('Playlist sample:', res.data.items[0])
       setUserPlaylists(res.data.items.filter(Boolean))
     } catch {
       setError('Failed to load playlists.')
