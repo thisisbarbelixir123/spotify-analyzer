@@ -379,3 +379,19 @@
 .infocard-feature:hover .infocard-feature-desc {
   display: block;
 }
+
+.infocard-feature-level {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.infocard-moodkey-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 2px;
+  font-style: italic;
+}

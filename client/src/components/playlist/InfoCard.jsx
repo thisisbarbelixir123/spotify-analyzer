@@ -6,6 +6,13 @@ import { useSavePlaylist } from '../../hooks/useSavePlaylist'
 import { AUDIO_FEATURES } from '../../utils/audioFeatures'
 import './InfoCard.css'
 
+function getLevel(val) {
+  if (val == null) return null
+  if (val >= 70) return { label: 'High', color: '#1DB954' }
+  if (val >= 40) return { label: 'Mid',  color: '#FFD93D' }
+  return              { label: 'Low',  color: '#FF6B35' }
+}
+
 const MAIN_FEATURES = [
   { key: 'energy',       label: 'Energy',       emoji: '⚡', color: '#FF6B35' },
   { key: 'danceability', label: 'Danceability',  emoji: '🕺', color: '#1DB954' },
@@ -13,10 +20,10 @@ const MAIN_FEATURES = [
 ]
 
 const MORE_FEATURES = [
-  { key: 'acousticness',     label: 'Acoustic',      emoji: '🎸', color: '#A8D8EA' },
-  { key: 'instrumentalness', label: 'Instrumental',  emoji: '🎹', color: '#C77DFF' },
-  { key: 'speechiness',      label: 'Vocal',         emoji: '🎤', color: '#FF8FAB' },
-  { key: 'liveness',         label: 'Live Feel',     emoji: '🎪', color: '#00B4D8' },
+  { key: 'acousticness',     label: 'Acoustic',     emoji: '🎸', color: '#A8D8EA' },
+  { key: 'instrumentalness', label: 'Instrumental', emoji: '🎹', color: '#C77DFF' },
+  { key: 'speechiness',      label: 'Vocal',        emoji: '🎤', color: '#FF8FAB' },
+  { key: 'liveness',         label: 'Live Feel',    emoji: '🎪', color: '#00B4D8' },
 ]
 
 const MOOD_EMOJI = {
@@ -29,10 +36,56 @@ const MOOD_EMOJI = {
   neutral:     '😐',
 }
 
+const MOOD_DESC = {
+  happy:       'Upbeat and joyful tracks',
+  calm:        'Relaxed and peaceful tracks',
+  sad:         'Melancholic or emotional tracks',
+  tense:       'Intense or anxious-feeling tracks',
+  energetic:   'High-energy and driving tracks',
+  melancholic: 'Reflective and bittersweet tracks',
+  neutral:     'Balanced mood, neither happy nor sad',
+}
+
+const KEY_DESC = 'The most common musical key across your tracks. Minor keys tend to sound darker, major keys brighter.'
+
+const FeatureButton = ({ featureKey, label, emoji, color, val, onClick }) => {
+  const desc = AUDIO_FEATURES[featureKey]?.description
+  const level = getLevel(val)
+  return (
+    <button className="infocard-feature" onClick={onClick}>
+      <div className="infocard-feature-top">
+        <span className="infocard-feature-name">
+          {emoji} {label}
+          {desc && <span className="infocard-feature-hint" title={desc}>ⓘ</span>}
+        </span>
+        <span className="infocard-feature-pct">
+          {val != null ? (
+            <>
+              {val}%
+              {level && (
+                <span className="infocard-feature-level" style={{ color: level.color }}>
+                  {level.label}
+                </span>
+              )}
+            </>
+          ) : '—'}
+        </span>
+      </div>
+      <div className="infocard-feature-bar">
+        <div
+          className="infocard-feature-fill"
+          style={{ width: `${val ?? 0}%`, background: color }}
+        />
+      </div>
+      {desc && <span className="infocard-feature-desc">{desc}</span>}
+    </button>
+  )
+}
+
 const InfoCard = ({ result, onRemove }) => {
-  const [showMore,     setShowMore]     = useState(false)
-  const [topListModal, setTopListModal] = useState(null)
-  const [audioModal,   setAudioModal]   = useState(null)
+  const [showMore,      setShowMore]     = useState(false)
+  const [topListModal,  setTopListModal] = useState(null)
+  const [audioModal,    setAudioModal]   = useState(null)
 
   const { isSaving, saveStatus, savedUrl, saveToSpotify } = useSavePlaylist()
 
@@ -51,13 +104,8 @@ const InfoCard = ({ result, onRemove }) => {
     long_term:   'All Time',
   }
 
-  const cardTitle = isTopTracks
-    ? `Top Tracks — ${TIME_LABEL[timeRange]}`
-    : label
-
-  // Coverage info
-  const coverage = averages?._coverage ?? 0
-  const total    = averages?._total    ?? 0
+  const cardTitle = isTopTracks ? `Top Tracks — ${TIME_LABEL[timeRange]}` : label
+  const coverage  = averages?._coverage ?? 0
 
   return (
     <div className="infocard">
@@ -140,12 +188,16 @@ const InfoCard = ({ result, onRemove }) => {
                 <span className="infocard-moodkey-value">
                   {MOOD_EMOJI[averages.mood] ?? '🎵'} {averages.mood}
                 </span>
+                <span className="infocard-moodkey-desc">
+                  {MOOD_DESC[averages.mood] ?? ''}
+                </span>
               </div>
             )}
             {averages?.key && (
               <div className="infocard-moodkey-item">
                 <span className="infocard-row-label">Key</span>
                 <span className="infocard-moodkey-value">🎹 {averages.key}</span>
+                <span className="infocard-moodkey-desc">{KEY_DESC}</span>
               </div>
             )}
           </div>
@@ -157,42 +209,25 @@ const InfoCard = ({ result, onRemove }) => {
       {/* ── Audio Features ── */}
       <div className="infocard-features-label">Audio Features</div>
 
-      {/* Main 3 */}
-      {MAIN_FEATURES.map(({ key, label, emoji, color }) => {
-        const val = averages?.[key] ?? null
-        const desc = AUDIO_FEATURES[key]?.description
-        return (
-          <button
-            key={key}
-            className="infocard-feature"
-            onClick={() => setAudioModal({ featureKey: key })}
-          >
-            <div className="infocard-feature-top">
-              <span className="infocard-feature-name">
-                {emoji} {label}
-                {desc && (
-                  <span className="infocard-feature-hint" title={desc}>ⓘ</span>
-                )}
-              </span>
-              <span className="infocard-feature-pct">{val != null ? `${val}%` : '—'}</span>
-            </div>
-            <div className="infocard-feature-bar">
-              <div
-                className="infocard-feature-fill"
-                style={{ width: `${val ?? 0}%`, background: color }}
-              />
-            </div>
-            {desc && (
-              <span className="infocard-feature-desc">{desc}</span>
-            )}
-          </button>
-        )
-      })}
+      {MAIN_FEATURES.map(({ key, label, emoji, color }) => (
+        <FeatureButton
+          key={key}
+          featureKey={key}
+          label={label}
+          emoji={emoji}
+          color={color}
+          val={averages?.[key] ?? null}
+          onClick={() => setAudioModal({ featureKey: key })}
+        />
+      ))}
 
       {/* BPM */}
       <div className="infocard-feature infocard-feature-bpm">
         <div className="infocard-feature-top">
-          <span className="infocard-feature-name">🥁 Tempo</span>
+          <span className="infocard-feature-name">
+            🥁 Tempo
+            <span className="infocard-feature-hint" title="Average tempo (beats per minute) across your tracks.">ⓘ</span>
+          </span>
           <span className="infocard-feature-pct">
             {averages?.bpm != null ? `${averages.bpm} BPM` : '—'}
           </span>
@@ -200,43 +235,21 @@ const InfoCard = ({ result, onRemove }) => {
       </div>
 
       {/* See more */}
-      <button
-        className="infocard-seemore-btn"
-        onClick={() => setShowMore((v) => !v)}
-      >
+      <button className="infocard-seemore-btn" onClick={() => setShowMore((v) => !v)}>
         {showMore ? 'See less ↑' : 'See more ↓'}
       </button>
 
-      {showMore && MORE_FEATURES.map(({ key, label, emoji, color }) => {
-          const val = averages?.[key] ?? null
-          const desc = AUDIO_FEATURES[key]?.description
-          return (
-            <button
-              key={key}
-              className="infocard-feature"
-              onClick={() => setAudioModal({ featureKey: key, featureMeta: { label, emoji, color } })}
-            >
-              <div className="infocard-feature-top">
-                <span className="infocard-feature-name">
-                  {emoji} {label}
-                  {desc && (
-                    <span className="infocard-feature-hint" title={desc}>ⓘ</span>
-                  )}
-                </span>
-                <span className="infocard-feature-pct">{val != null ? `${val}%` : '—'}</span>
-              </div>
-              <div className="infocard-feature-bar">
-                <div
-                  className="infocard-feature-fill"
-                  style={{ width: `${val ?? 0}%`, background: color }}
-                />
-              </div>
-              {desc && (
-                <span className="infocard-feature-desc">{desc}</span>
-              )}
-            </button>
-          )
-        })}
+      {showMore && MORE_FEATURES.map(({ key, label, emoji, color }) => (
+        <FeatureButton
+          key={key}
+          featureKey={key}
+          label={label}
+          emoji={emoji}
+          color={color}
+          val={averages?.[key] ?? null}
+          onClick={() => setAudioModal({ featureKey: key, featureMeta: { label, emoji, color } })}
+        />
+      ))}
 
       <div className="infocard-divider" />
 
@@ -248,12 +261,7 @@ const InfoCard = ({ result, onRemove }) => {
       {/* ── Footer ── */}
       <div className="infocard-footer">
         {spotifyUrl ? (
-          
-            <a className="infocard-spotify-btn"
-            href={spotifyUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className="infocard-spotify-btn" href={spotifyUrl} target="_blank" rel="noreferrer">
             View on Spotify ↗
           </a>
         ) : (
@@ -262,28 +270,19 @@ const InfoCard = ({ result, onRemove }) => {
               className={`infocard-save-btn ${isSaving ? 'loading' : ''} ${saveStatus === 'success' ? 'success' : ''} ${saveStatus === 'error' ? 'error' : ''}`}
               onClick={() => saveToSpotify(
                 tracks,
-                `My Top Tracks — ${
-                  { short_term: '4 Weeks', medium_term: '6 Months', long_term: 'All Time' }[timeRange]
-                }`
+                `My Top Tracks — ${{ short_term: '4 Weeks', medium_term: '6 Months', long_term: 'All Time' }[timeRange]}`
               )}
               disabled={isSaving}
             >
               {isSaving
                 ? <><span className="infocard-btn-spinner" /> Saving…</>
-                : saveStatus === 'success'
-                ? '✓ Saved to Spotify!'
-                : saveStatus === 'error'
-                ? '✕ Failed, try again'
+                : saveStatus === 'success' ? '✓ Saved to Spotify!'
+                : saveStatus === 'error'   ? '✕ Failed, try again'
                 : '+ Save to Spotify'
               }
             </button>
             {saveStatus === 'success' && savedUrl && (
-              
-                <a className="infocard-saved-link"
-                href={savedUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a className="infocard-saved-link" href={savedUrl} target="_blank" rel="noreferrer">
                 Open playlist ↗
               </a>
             )}
