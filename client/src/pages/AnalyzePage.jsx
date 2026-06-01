@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAppStore from '../store/useAppStore'
 import { usePlaylistAnalysis } from '../hooks/usePlaylistAnalysis'
 import InfoCard from '../components/playlist/InfoCard'
 import './AnalyzePage.css'
-import { useRef } from 'react'
 
 const TIME_RANGES = [
   { value: 'short_term',  label: '4 Weeks' },
@@ -24,14 +23,13 @@ const AnalyzePage = () => {
     analyzeTopTracks,
   } = usePlaylistAnalysis()
 
-  // Selection state
-  const [selectedTopTracks, setSelectedTopTracks] = useState([]) // array of time_range strings
-  const [selectedPlaylists, setSelectedPlaylists]   = useState([]) // array of playlist objects
-  const [showPlaylistPicker, setShowPlaylistPicker] = useState(false)
-
-  // Results state
-  const [results, setResults]       = useState([])   // array of analyzed items
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [selectedTopTracks,  setSelectedTopTracks]  = useState([])
+  const [selectedPlaylists,  setSelectedPlaylists]   = useState([])
+  const [showPlaylistPicker, setShowPlaylistPicker]  = useState(false)
+  const [results,            setResults]             = useState([])
+  const [isAnalyzing,        setIsAnalyzing]         = useState(false)
+  const [analyzeError,       setAnalyzeError]        = useState(null)
+  const isAnalyzingRef = useRef(false)
 
   const totalSelected = selectedTopTracks.length + selectedPlaylists.length
 
@@ -45,7 +43,6 @@ const AnalyzePage = () => {
     }
   }, [showPlaylistPicker])
 
-  // Toggle top track time range
   const toggleTopTrack = (value) => {
     setSelectedTopTracks((prev) => {
       const exists = prev.includes(value)
@@ -55,7 +52,6 @@ const AnalyzePage = () => {
     })
   }
 
-  // Toggle playlist selection
   const togglePlaylist = (playlist) => {
     setSelectedPlaylists((prev) => {
       const exists = prev.find((p) => p.id === playlist.id)
@@ -65,13 +61,10 @@ const AnalyzePage = () => {
     })
   }
 
-  const isTopTrackSelected  = (value) => selectedTopTracks.includes(value)
-  const isPlaylistSelected  = (p)     => selectedPlaylists.some((s) => s.id === p.id)
-  const isAnalyzingRef = useRef(false)
+  const isTopTrackSelected = (value) => selectedTopTracks.includes(value)
+  const isPlaylistSelected = (p)     => selectedPlaylists.some((s) => s.id === p.id)
 
-  // Run analysis
   const handleAnalyze = async () => {
-    // Edge case #5 — prevent double click
     if (isAnalyzingRef.current) return
     isAnalyzingRef.current = true
     setIsAnalyzing(true)
@@ -84,10 +77,10 @@ const AnalyzePage = () => {
         const data = await analyzeTopTracks(timeRange)
         if (data) {
           analysisResults.push({
-            id:        `top_${timeRange}`,
-            type:      'top_tracks',
+            id:       `top_${timeRange}`,
+            type:     'top_tracks',
             timeRange,
-            label:     TIME_RANGES.find((t) => t.value === timeRange)?.label,
+            label:    TIME_RANGES.find((t) => t.value === timeRange)?.label,
             ...data,
           })
         }
@@ -107,15 +100,7 @@ const AnalyzePage = () => {
         }
       }
 
-      if (failedPlaylists.length > 0) {
-        alert(`Could not access: ${failedPlaylists.join(', ')}. Try a different playlist.`)
-      }
-
-      setResults(analysisResults)
-      setShowPlaylistPicker(false)
-
       if (analysisResults.length === 0) {
-        // Edge case #6 — semua gagal
         setAnalyzeError(
           failedPlaylists.length > 0
             ? `Could not access: ${failedPlaylists.join(', ')}. Try a different playlist.`
@@ -130,21 +115,18 @@ const AnalyzePage = () => {
         setShowPlaylistPicker(false)
       }
     } finally {
-      // Edge case #5 — reset flag setelah selesai
       isAnalyzingRef.current = false
       setIsAnalyzing(false)
     }
   }
-  // Add more (from results view)
+
   const handleAddMore = () => {
     setShowPlaylistPicker(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Remove a result card
   const handleRemove = (id) => {
     setResults((prev) => prev.filter((r) => r.id !== id))
-    // Also deselect
     if (id.startsWith('top_')) {
       const range = id.replace('top_', '')
       setSelectedTopTracks((prev) => prev.filter((v) => v !== range))
@@ -157,19 +139,13 @@ const AnalyzePage = () => {
   const canAnalyze = totalSelected > 0
   const hasResults = results.length > 0
 
-  const [analyzeError, setAnalyzeError] = useState(null)
-
   return (
     <div className="analyze-page">
 
       {/* ── Header ── */}
       <div className="analyze-header">
         <h1 className="analyze-title">Analyze</h1>
-        <p className="analyze-sub">
-          Discover the audio fingerprint of your music taste.
-        </p>
-
-        {/* Step guide */}
+        <p className="analyze-sub">Discover the audio fingerprint of your music taste.</p>
         <div className="analyze-steps">
           <div className="analyze-step">
             <span className="analyze-step-num">1</span>
@@ -208,10 +184,7 @@ const AnalyzePage = () => {
           {/* Slot counter */}
           <div className="analyze-slot-bar">
             {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className={`analyze-slot ${i < totalSelected ? 'filled' : ''}`}
-              />
+              <div key={i} className={`analyze-slot ${i < totalSelected ? 'filled' : ''}`} />
             ))}
             <span className="analyze-slot-label">{totalSelected} / 3 selected</span>
           </div>
@@ -219,6 +192,9 @@ const AnalyzePage = () => {
           {/* Top Tracks */}
           <div className="analyze-group">
             <div className="analyze-group-title">🎧 My Top Tracks</div>
+            <div className="analyze-group-desc">
+              Your most-played songs on Spotify. Pick a time range to see what you've been listening to.
+            </div>
             <div className="analyze-chips">
               {TIME_RANGES.map((t) => (
                 <button
@@ -233,9 +209,12 @@ const AnalyzePage = () => {
             </div>
           </div>
 
-          {/* My Playlists toggle */}
+          {/* My Playlists */}
           <div className="analyze-group">
             <div className="analyze-group-title">📂 My Playlists</div>
+            <div className="analyze-group-desc">
+              Playlists you created or saved on Spotify. Pick up to 3 to analyze their audio profile.
+            </div>
             <button
               className="analyze-playlist-toggle"
               onClick={() => setShowPlaylistPicker((v) => !v)}
@@ -312,7 +291,7 @@ const AnalyzePage = () => {
           <button onClick={() => setAnalyzeError(null)}>✕</button>
         </div>
       )}
-      
+
       {/* ── RESULTS ── */}
       {hasResults && !showPlaylistPicker && (
         <div className="analyze-results">
@@ -324,7 +303,6 @@ const AnalyzePage = () => {
               </button>
             )}
           </div>
-
           <div className="analyze-cards-row">
             {results.map((result) => (
               <InfoCard

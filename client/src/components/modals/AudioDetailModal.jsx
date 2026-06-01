@@ -69,7 +69,9 @@ const AudioDetailModal = ({ featureKey, tracks, audioFeatures, onClose }) => {
             <span className="admodal-emoji">{meta.emoji}</span>
             <div>
               <h2 className="admodal-title">{meta.label}</h2>
-              <p className="admodal-subtitle">Top & bottom tracks in this playlist</p>
+              <p className="admodal-subtitle">
+                Tracks with the highest and lowest {meta.label.toLowerCase()} in this selection
+              </p>
             </div>
           </div>
           <button className="admodal-close" onClick={onClose}>✕</button>
