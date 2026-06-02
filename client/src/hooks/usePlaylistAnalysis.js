@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { spotifyApi } from '../services/spotifyApi'
 import { bulkLookup, normalizeFeatures, calculateAverages } from '../services/freqblogApi'
+import useAppStore from '../store/useAppStore'  // ← tambahkan ini
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -74,10 +75,14 @@ export function usePlaylistAnalysis() {
     setError(null)
     try {
       const res = await spotifyApi.getUserPlaylists(50)
-      // Hanya tampilkan playlist yang dibuat user sendiri
+      const userId = useAppStore.getState().user?.id
+      console.log('Current user ID:', userId)
       const ownPlaylists = res.data.items
         .filter(Boolean)
-        .filter((p) => p.owner?.id === useAppStore.getState().user?.id)
+        .filter((p) => {
+          console.log('Playlist owner:', p.owner?.id, '| User:', userId)
+          return p.owner?.id === userId
+        })
       setUserPlaylists(ownPlaylists)
     } catch {
       setError('Failed to load playlists.')
