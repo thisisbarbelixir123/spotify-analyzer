@@ -4,8 +4,8 @@ export async function bulkLookup(tracks) {
   if (!tracks || tracks.length === 0) return []
 
   const chunks = []
-  for (let i = 0; i < tracks.length; i += 10) {
-    chunks.push(tracks.slice(i, i + 10))
+  for (let i = 0; i < tracks.length; i += 5) {
+    chunks.push(tracks.slice(i, i + 5))
   }
 
   const results = []
