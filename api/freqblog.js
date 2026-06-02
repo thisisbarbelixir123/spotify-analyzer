@@ -8,9 +8,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid payload' })
   }
 
+  // Debug log
+  console.log('Tracks count:', tracks.length)
+  console.log('Sample track:', JSON.stringify(tracks[0]))
+
   try {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 9000) // 9 detik — di bawah limit 10s Vercel
+    const timeout = setTimeout(() => controller.abort(), 9000)
 
     const response = await fetch('https://api.freqblog.com/bulk', {
       method: 'POST',
@@ -26,6 +30,8 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const text = await response.text()
+      console.error('FreqBlog error status:', response.status)
+      console.error('FreqBlog error body:', text)
       return res.status(response.status).json({ error: text })
     }
 

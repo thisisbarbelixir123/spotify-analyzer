@@ -214,7 +214,7 @@ const AnalyzePage = () => {
           <div className="analyze-group">
             <div className="analyze-group-title">📂 My Playlists</div>
             <div className="analyze-group-desc">
-              Playlists you created or saved on Spotify. Pick up to 3 to analyze their audio profile.
+              Playlists you created on Spotify. Only your own playlists can be analyzed — saved or followed playlists from other users are not supported due to Spotify API restrictions.
             </div>
             <button
               className="analyze-playlist-toggle"

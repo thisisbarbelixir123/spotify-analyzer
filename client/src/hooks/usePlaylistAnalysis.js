@@ -74,8 +74,11 @@ export function usePlaylistAnalysis() {
     setError(null)
     try {
       const res = await spotifyApi.getUserPlaylists(50)
-      console.log('Playlist sample:', res.data.items[0])
-      setUserPlaylists(res.data.items.filter(Boolean))
+      // Hanya tampilkan playlist yang dibuat user sendiri
+      const ownPlaylists = res.data.items
+        .filter(Boolean)
+        .filter((p) => p.owner?.id === useAppStore.getState().user?.id)
+      setUserPlaylists(ownPlaylists)
     } catch {
       setError('Failed to load playlists.')
     } finally {
