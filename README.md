@@ -2,7 +2,7 @@
 
 A web application that analyzes the audio fingerprint of your Spotify playlists and top tracks — built with React, Vite, and Vercel serverless functions.
 
-**Live demo:** https://spotify-analyzer-blond.vercel.app
+**Live demo:** https://spotify-analyzer-blond.vercel.app (e-mail whitelist required)
 
 ---
 
@@ -138,7 +138,7 @@ Test coverage includes:
 
 ## License
 
-This project was developed as an undergraduate thesis project at **Bina Nusantara University** (2025).
+This project was developed as an undergraduate thesis project at **Bina Nusantara University** (2026).
 
 ---
 
